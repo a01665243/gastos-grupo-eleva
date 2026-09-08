@@ -264,6 +264,7 @@
     founders: [],
     myFounderId: null,
     expenses: [],
+    pending: [], // gastos que ya se muestran en pantalla pero aún se están guardando en la hoja
     filter: "all",
     quickAdd: { amount: "", categoryId: null, type: "personal", note: "" },
     loaded: false
@@ -311,7 +312,8 @@
     });
   }
 
-  async function loadData(first){
+  async function loadData(first, attempt){
+    attempt = attempt || 1;
     try{
       var data = await apiGet();
       state.expenses = (data.expenses || []).slice().sort(function(a,b){
@@ -336,7 +338,19 @@
     }catch(err){
       console.error(err);
       if(first){
-        app.innerHTML = '<div style="padding:60px 24px;text-align:center;color:var(--text-dim);font-size:14px;">No se pudo conectar con la hoja de datos. Revisa tu conexión e intenta de nuevo.</div>';
+        // Google Apps Script a veces tarda en "despertar" — reintenta un par
+        // de veces antes de mostrar el error, en vez de fallar al primer intento.
+        if(attempt < 3){
+          setTimeout(function(){ loadData(true, attempt + 1); }, 1200 * attempt);
+          return;
+        }
+        app.innerHTML =
+          '<div style="padding:60px 24px;text-align:center;color:var(--text-dim);font-size:14px;">' +
+            'No se pudo conectar con la hoja de datos.<br>Revisa tu conexión e intenta de nuevo.' +
+            '<button class="btn-primary" id="retryLoadBtn" style="margin-top:20px;max-width:220px;">Reintentar</button>' +
+          '</div>';
+        var rb = document.getElementById("retryLoadBtn");
+        if(rb) rb.onclick = function(){ app.innerHTML = ""; boot(); };
       } else {
         toast("Sin conexión, reintentando…");
       }
@@ -476,8 +490,12 @@
 
   // Every list/total in the app is scoped to the active profile first —
   // each founder only ever sees their own expenses, never anyone else's.
+  // Merge server-confirmed expenses with any still-saving ones so a new
+  // expense appears instantly instead of waiting on the round trip.
   function myExpenses(){
-    return state.expenses.filter(function(e){ return e.founderId === state.myFounderId; });
+    return state.expenses.concat(state.pending)
+      .filter(function(e){ return e.founderId === state.myFounderId; })
+      .sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
   }
 
   function filteredExpenses(){
@@ -541,7 +559,11 @@
     }).join("");
 
     Array.prototype.forEach.call(el.querySelectorAll(".row"), function(r){
-      r.onclick = function(){ openDetail(r.getAttribute("data-id")); };
+      r.onclick = function(){
+        var rid = r.getAttribute("data-id");
+        if(/^tmp_/.test(rid)){ toast("Todavía se está guardando…"); return; }
+        openDetail(rid);
+      };
     });
   }
 
@@ -549,9 +571,10 @@
     var cat = catById(e.categoryId);
     var f = state.founders.find(function(x){return x.id===e.founderId;}) || {name:"—", color:"#999"};
     var isNeg = e.type === "negocio";
-    return '<div class="row" data-id="'+e.id+'">' +
+    var isPending = /^tmp_/.test(e.id);
+    return '<div class="row'+(isPending?' row-pending':'')+'" data-id="'+e.id+'" style="'+(isPending?'opacity:.55;':'')+'">' +
       '<div class="row-icon" style="background:'+hexA(f.color,.14)+'; color:'+f.color+'">'+ '<svg viewBox="0 0 24 24">'+cat.icon+'</svg>' + '</div>' +
-      '<div class="row-mid"><div class="cat">'+esc(cat.label)+(e.note? ' · '+esc(e.note) : '')+'</div><div class="meta">'+esc(f.name)+'</div></div>' +
+      '<div class="row-mid"><div class="cat">'+esc(cat.label)+(e.note? ' · '+esc(e.note) : '')+'</div><div class="meta">'+esc(f.name)+(isPending? ' · Guardando…' : '')+'</div></div>' +
       '<div class="row-amt"><div class="amt tnum">'+fmtMoney(e.amount)+'</div><div class="type" style="color:'+(isNeg?'var(--accent-2)':'var(--accent)')+'">'+(isNeg?'Negocio':'Personal')+'</div></div>' +
     '</div>';
   }
@@ -644,12 +667,16 @@
 
     document.getElementById("qaNote").oninput = function(e){ state.quickAdd.note = e.target.value; };
 
-    document.getElementById("qaSave").onclick = async function(){
+    document.getElementById("qaSave").onclick = function(){
       var amt = parseFloat(state.quickAdd.amount || "0");
       if(!amt || !state.quickAdd.categoryId) return;
-      var btn = document.getElementById("qaSave");
-      btn.disabled = true; btn.textContent = "Guardando…";
+      // Guardado optimista: el gasto aparece en la lista al instante y se
+      // cierra la hoja de inmediato; el envío a la hoja de cálculo sigue
+      // en segundo plano, para que registrar un gasto se sienta instantáneo
+      // en vez de esperar a que responda Google Apps Script.
+      var tempId = "tmp_" + Date.now() + "_" + Math.floor(Math.random()*1e6);
       var newExpense = {
+        id: tempId,
         amount: amt,
         categoryId: state.quickAdd.categoryId,
         type: state.quickAdd.type,
@@ -657,16 +684,39 @@
         founderId: state.myFounderId,
         createdAt: new Date().toISOString()
       };
-      try{
-        await apiPost({ action:"addExpense", expense: newExpense });
-        closeSheet();
-        toast("Gasto guardado ✓");
-        loadData(false);
-      }catch(err){
-        toast("No se pudo guardar, intenta de nuevo");
-        btn.disabled = false; btn.textContent = "Guardar gasto";
-      }
+      state.pending.push(newExpense);
+      closeSheet();
+      toast("Gasto guardado ✓");
+      if(document.getElementById("list")){ renderList(); renderTotals(); }
+      savePendingExpense(newExpense);
     };
+  }
+
+  async function savePendingExpense(newExpense, attempt){
+    attempt = attempt || 1;
+    try{
+      await apiPost({ action:"addExpense", expense:{
+        amount: newExpense.amount,
+        categoryId: newExpense.categoryId,
+        type: newExpense.type,
+        note: newExpense.note,
+        founderId: newExpense.founderId,
+        createdAt: newExpense.createdAt
+      }});
+      // espera a tener los datos reales del servidor antes de quitar la
+      // versión local, para que el gasto nunca desaparezca de la pantalla
+      try{ await loadData(false); }catch(e){}
+      state.pending = state.pending.filter(function(e){ return e.id !== newExpense.id; });
+      if(document.getElementById("list")){ renderList(); renderTotals(); }
+    }catch(err){
+      if(attempt < 3){
+        setTimeout(function(){ savePendingExpense(newExpense, attempt + 1); }, 1500 * attempt);
+      } else {
+        state.pending = state.pending.filter(function(e){ return e.id !== newExpense.id; });
+        if(document.getElementById("list")){ renderList(); renderTotals(); }
+        toast("No se guardó tu gasto de " + fmtMoney(newExpense.amount) + ", intenta de nuevo");
+      }
+    }
   }
   function updateQaAmount(){
     var el = document.getElementById("qaAmount");
