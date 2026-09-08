@@ -463,7 +463,6 @@
     if(!el) return;
     var tabs = [
       {id:"all", label:"Todos"},
-      {id:"mine", label:"Mis gastos"},
       {id:"personal", label:"Personal"},
       {id:"negocio", label:"Negocio"}
     ];
@@ -475,9 +474,14 @@
     });
   }
 
+  // Every list/total in the app is scoped to the active profile first —
+  // each founder only ever sees their own expenses, never anyone else's.
+  function myExpenses(){
+    return state.expenses.filter(function(e){ return e.founderId === state.myFounderId; });
+  }
+
   function filteredExpenses(){
-    return state.expenses.filter(function(e){
-      if(state.filter==="mine") return e.founderId === state.myFounderId;
+    return myExpenses().filter(function(e){
       if(state.filter==="personal") return e.type === "personal";
       if(state.filter==="negocio") return e.type === "negocio";
       return true;
@@ -488,7 +492,7 @@
     var el = document.getElementById("totals");
     if(!el) return;
     var now = new Date();
-    var monthExp = state.expenses.filter(function(e){
+    var monthExp = myExpenses().filter(function(e){
       var d = new Date(e.createdAt);
       return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
     });
@@ -722,6 +726,7 @@
       el.onclick = function(){
         state.myFounderId = el.getAttribute("data-id");
         localStorage.setItem(LS_KEY, state.myFounderId);
+        state.filter = "all";
         closeSheet();
         renderShell();
       };
