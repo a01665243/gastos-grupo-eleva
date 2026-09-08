@@ -213,7 +213,7 @@
       var timer = setTimeout(function(){
         if(done) return; done = true; cleanup();
         reject(new Error("timeout"));
-      }, timeoutMs || 15000);
+      }, timeoutMs || 20000);
       window[cbName] = function(data){
         if(done) return; done = true; cleanup();
         resolve(data);
@@ -696,6 +696,10 @@
     attempt = attempt || 1;
     try{
       await apiPost({ action:"addExpense", expense:{
+        // se manda el mismo id generado en el celular en cada intento —
+        // así, si un reintento llega después de que el primero sí se
+        // guardó, la hoja lo reconoce y no lo duplica.
+        clientId: newExpense.id,
         amount: newExpense.amount,
         categoryId: newExpense.categoryId,
         type: newExpense.type,
