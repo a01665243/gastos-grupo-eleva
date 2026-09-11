@@ -54,6 +54,10 @@
   }
   h1,h2,h3,.font-display{font-family:"Sora","Plus Jakarta Sans",sans-serif; letter-spacing:-.01em; text-wrap:balance;}
   button{font-family:inherit;}
+  /* Evita que toques rápidos y seguidos se malinterpreten como un intento
+     de doble-toque para hacer zoom (lo que en la práctica puede hacer que
+     un mismo toque se registre dos veces en botones como el teclado). */
+  button, .row, .cat-item, .chip-tab, .founder-card, .avatar-pill{ touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
   input,textarea{font-family:inherit;}
   .tnum{font-variant-numeric:tabular-nums;}
 
@@ -125,16 +129,41 @@
   .sheet-body{padding:6px 18px 18px; overflow-y:auto;}
   .sheet-close{width:32px; height:32px; border-radius:50%; border:none; background:var(--surface-2); color:var(--text-dim); display:flex; align-items:center; justify-content:center; cursor:pointer;}
 
-  /* Quick add + PIN keypad */
+  /* Quick add keypad (monto) */
   .amount-wrap{text-align:center; padding:18px 0 8px;}
   .amount-wrap .curr{font-size:20px; color:var(--text-faint); font-weight:600; vertical-align:top; position:relative; top:8px;}
   .amount-wrap .val{font-family:"Sora"; font-size:52px; font-weight:800; letter-spacing:-.01em;}
   .amount-wrap .val.placeholder{color:var(--text-faint);}
-  .keypad{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:10px 0 16px;}
-  .keypad button{border:none; background:var(--surface-2); border-radius:var(--radius-sm); padding:15px 0; font-size:19px; font-weight:700; color:var(--text); cursor:pointer;}
+  .keypad{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0 16px;}
+  .keypad button{border:none; background:var(--surface-2); border-radius:var(--radius-sm); padding:19px 0; font-size:22px; font-weight:700; color:var(--text); cursor:pointer;
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent; user-select:none;}
   .keypad button:active{background:var(--accent-soft); color:var(--accent);}
-  .keypad button.del{color:var(--danger); font-size:16px;}
+  .keypad button.del{color:var(--danger); font-size:17px;}
   .keypad .blank{background:transparent; cursor:default;}
+
+  /* Pantalla de PIN — pensada como un desbloqueo de celular: grande,
+     centrada, con un teclado circular fácil de tocar sin errores. */
+  .pin-screen{min-height:100vh; display:flex; flex-direction:column; padding:22px 24px calc(28px + env(safe-area-inset-bottom));}
+  .pin-screen .pin-top{display:flex; align-items:center; justify-content:center; padding-top:6px;}
+  .pin-screen .pin-headline{text-align:center; margin-top:22px;}
+  .pin-screen .pin-headline h1{font-size:23px; margin:0 0 8px;}
+  .pin-screen .pin-headline p{color:var(--text-dim); font-size:14.5px; line-height:1.5; margin:0 auto; max-width:300px;}
+  .pin-dots{display:flex; justify-content:center; gap:22px; margin:34px 0 4px;}
+  .pin-dot{width:18px; height:18px; border-radius:50%; border:2.5px solid var(--border); transition:all .14s ease; flex:none;}
+  .pin-dot.filled{background:var(--accent); border-color:var(--accent); transform:scale(1.15); box-shadow:0 0 0 6px var(--accent-soft);}
+  .pin-error{min-height:20px; color:var(--danger); font-size:13.5px; font-weight:700; text-align:center; margin:10px 0 0;}
+  .pin-spacer{flex:1; min-height:20px;}
+  .pin-keypad{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:320px; width:100%; margin:0 auto;}
+  .pin-key{
+    aspect-ratio:1; border:none; border-radius:50%; background:var(--surface-2);
+    font-family:"Sora"; font-size:27px; font-weight:700; color:var(--text);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+  .pin-key:active{background:var(--accent-soft); color:var(--accent); transform:scale(.95);}
+  .pin-key.blank{background:transparent; cursor:default;}
+  .pin-key.del{font-size:20px; color:var(--text-dim);}
+  .pin-back{background:none; border:none; color:var(--text-dim); font-size:13.5px; font-weight:700; padding:16px 0 2px; cursor:pointer; touch-action:manipulation;}
 
   .field-label{font-size:12.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em; margin:14px 2px 8px;}
   .cat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
@@ -183,11 +212,6 @@
   .name-row .text-input{flex:1;}
   .name-row button{border:none; background:var(--danger-soft); color:var(--danger); width:40px; border-radius:12px; font-size:16px; cursor:pointer;}
   .add-link{background:none; border:1.5px dashed var(--border); color:var(--text-dim); font-weight:700; font-size:13.5px; padding:12px; border-radius:14px; width:100%; cursor:pointer; margin-top:4px;}
-
-  .pin-dots{display:flex; justify-content:center; gap:16px; margin:22px 0 4px;}
-  .pin-dot{width:15px; height:15px; border-radius:50%; border:2px solid var(--border); transition:all .12s ease;}
-  .pin-dot.filled{background:var(--accent); border-color:var(--accent); transform:scale(1.1);}
-  .pin-error{color:var(--danger); font-size:13px; font-weight:700; text-align:center; min-height:18px; margin:8px 0 4px;}
 </style>
 </head>
 <body>
@@ -431,17 +455,18 @@
   // (para crear un PIN nuevo se pide dos veces). onSubmit(pin, failCb).
   function renderPinScreen(opts){
     app.innerHTML =
-      '<div class="onboard" id="screen-onboard">' +
-        '<div class="brandmark">GE</div>' +
-        '<h1 id="pinTitle">'+esc(opts.title)+'</h1>' +
-        '<p id="pinSubtitle">'+esc(opts.subtitle)+'</p>' +
+      '<div class="pin-screen" id="screen-onboard">' +
+        '<div class="pin-top"><div class="brandmark">GE</div></div>' +
+        '<div class="pin-headline"><h1 id="pinTitle">'+esc(opts.title)+'</h1><p id="pinSubtitle">'+esc(opts.subtitle)+'</p></div>' +
         '<div class="pin-dots" id="pinDots"></div>' +
         '<div class="pin-error" id="pinError"></div>' +
-        '<div class="keypad" id="pinKeypad" style="max-width:280px;margin:10px auto 0;"></div>' +
-        (opts.backLabel ? '<button class="add-link" id="pinBack">'+esc(opts.backLabel)+'</button>' : '') +
+        '<div class="pin-spacer"></div>' +
+        '<div class="pin-keypad" id="pinKeypad"></div>' +
+        (opts.backLabel ? '<button class="pin-back" id="pinBack">'+esc(opts.backLabel)+'</button>' : '') +
       '</div>';
 
     var pin = "", firstPin = "", stage = 0, busy = false;
+    var lastTapAt = 0, lastTapKey = null;
 
     function renderDots(){
       var html = "";
@@ -452,14 +477,22 @@
 
     var keys = ["1","2","3","4","5","6","7","8","9","blank","0","del"];
     document.getElementById("pinKeypad").innerHTML = keys.map(function(k){
-      if(k === "blank") return '<button class="blank" tabindex="-1"></button>';
-      return '<button data-k="'+k+'" class="'+(k==="del"?"del":"")+'">'+(k==="del"?"⌫":k)+'</button>';
+      if(k === "blank") return '<button class="pin-key blank" tabindex="-1"></button>';
+      return '<button data-k="'+k+'" class="pin-key'+(k==="del"?" del":"")+'">'+(k==="del"?"⌫":k)+'</button>';
     }).join("");
 
     Array.prototype.forEach.call(document.querySelectorAll("#pinKeypad button[data-k]"), function(b){
       b.onclick = function(){
         if(busy) return;
         var k = b.getAttribute("data-k");
+        // Seguro extra contra el "doble toque": en algunos navegadores
+        // móviles, un toque muy rápido y repetido sobre el mismo botón
+        // puede llegar a disparar el evento dos veces. Si el mismo dígito
+        // llega dos veces en menos de 60ms (mucho más rápido que un toque humano real), la segunda se ignora.
+        var now = Date.now();
+        if(k === lastTapKey && (now - lastTapAt) < 60) return;
+        lastTapAt = now; lastTapKey = k;
+
         document.getElementById("pinError").textContent = "";
         if(k === "del"){ pin = pin.slice(0,-1); renderDots(); return; }
         if(pin.length >= 4) return;
@@ -870,9 +903,17 @@
     document.getElementById("qaKeypad").innerHTML = keys.map(function(k){
       return '<button data-k="'+k+'" class="'+(k==="del"?"del":"")+'">'+(k==="del"?"⌫":k)+'</button>';
     }).join("");
+    var qaLastTapAt = 0, qaLastTapKey = null;
     Array.prototype.forEach.call(document.querySelectorAll("#qaKeypad button"), function(b){
       b.onclick = function(){
         var k = b.getAttribute("data-k");
+        // Mismo seguro contra doble-toque que en el teclado del PIN: si el
+        // mismo dígito llega dos veces en menos de 60ms (mucho más rápido que un toque humano real), la segunda se
+        // ignora (evita que un "100" se convierta en "1000" al escribir rápido).
+        var now = Date.now();
+        if(k === qaLastTapKey && (now - qaLastTapAt) < 60) return;
+        qaLastTapAt = now; qaLastTapKey = k;
+
         var a = state.quickAdd.amount;
         if(k==="del"){ a = a.slice(0,-1); }
         else if(k==="."){ if(!a.includes(".")) a += (a===""?"0.":"."); }
