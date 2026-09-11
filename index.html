@@ -67,9 +67,10 @@
   .brandtext b{font-family:"Sora"; font-size:15px; font-weight:700;}
   .brandtext span{font-size:11.5px; color:var(--text-dim);}
   .topbar-spacer{flex:1;}
-  .avatar-btn{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:5px 12px 5px 5px; cursor:pointer;}
+  .avatar-pill{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:5px 12px 5px 5px;}
   .avatar{width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; flex:none;}
-  .avatar-btn span{font-size:13px; font-weight:600;}
+  .avatar-pill span{font-size:13px; font-weight:600;}
+  .role-badge{background:var(--accent-soft); color:var(--accent); font-size:11px; font-weight:700; padding:6px 12px; border-radius:100px; text-transform:uppercase; letter-spacing:.04em;}
   .icon-btn{width:38px; height:38px; border-radius:50%; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--text-dim); cursor:pointer; flex:none;}
   .icon-btn:active{transform:scale(.94);}
 
@@ -78,13 +79,14 @@
   .totals::after{content:""; position:absolute; right:-30px; top:-30px; width:140px; height:140px; border-radius:32px; background:rgba(255,255,255,.08); transform:rotate(18deg);}
   .totals-label{font-size:12.5px; opacity:.82; font-weight:600; text-transform:uppercase; letter-spacing:.05em;}
   .totals-amount{font-family:"Sora"; font-size:34px; font-weight:800; margin-top:4px; position:relative;}
-  .totals-sub{display:flex; gap:10px; margin-top:14px; position:relative;}
+  .totals-sub{display:flex; gap:10px; margin-top:14px; position:relative; flex-wrap:wrap;}
   .totals-chip{background:rgba(255,255,255,.14); border-radius:100px; padding:6px 12px; font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px;}
   .totals-chip i{width:7px; height:7px; border-radius:50%; background:#fff; display:inline-block;}
 
   /* ---------- Filters ---------- */
-  .filters{display:flex; gap:8px; padding:0 16px 14px; overflow-x:auto; scrollbar-width:none;}
+  .filters{display:flex; gap:8px; padding:0 16px 10px; overflow-x:auto; scrollbar-width:none;}
   .filters::-webkit-scrollbar{display:none;}
+  .filters.filters-tight{padding-bottom:14px;}
   .chip-tab{flex:none; border:1px solid var(--border); background:var(--surface); color:var(--text-dim); font-size:13px; font-weight:600; padding:8px 14px; border-radius:100px; cursor:pointer; white-space:nowrap;}
   .chip-tab.active{background:var(--text); color:var(--bg); border-color:var(--text);}
 
@@ -111,7 +113,6 @@
   .fab{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:30; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--accent-2), var(--accent)); border:none; box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; cursor:pointer; max-width:calc(480px - 32px);}
   .fab svg{width:26px; height:26px; stroke:#fff; stroke-width:2.4; fill:none; stroke-linecap:round;}
   .fab:active{transform:translateX(-50%) scale(.92);}
-  @media (min-width:520px){ .fab{ left:calc(50% ); } }
 
   /* ---------- Sheets / modals ---------- */
   .scrim{position:fixed; inset:0; background:rgba(10,8,18,.5); z-index:40; opacity:0; pointer-events:none; transition:opacity .18s ease;}
@@ -124,7 +125,7 @@
   .sheet-body{padding:6px 18px 18px; overflow-y:auto;}
   .sheet-close{width:32px; height:32px; border-radius:50%; border:none; background:var(--surface-2); color:var(--text-dim); display:flex; align-items:center; justify-content:center; cursor:pointer;}
 
-  /* Quick add */
+  /* Quick add + PIN keypad */
   .amount-wrap{text-align:center; padding:18px 0 8px;}
   .amount-wrap .curr{font-size:20px; color:var(--text-faint); font-weight:600; vertical-align:top; position:relative; top:8px;}
   .amount-wrap .val{font-family:"Sora"; font-size:52px; font-weight:800; letter-spacing:-.01em;}
@@ -133,6 +134,7 @@
   .keypad button{border:none; background:var(--surface-2); border-radius:var(--radius-sm); padding:15px 0; font-size:19px; font-weight:700; color:var(--text); cursor:pointer;}
   .keypad button:active{background:var(--accent-soft); color:var(--accent);}
   .keypad button.del{color:var(--danger); font-size:16px;}
+  .keypad .blank{background:transparent; cursor:default;}
 
   .field-label{font-size:12.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em; margin:14px 2px 8px;}
   .cat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
@@ -165,6 +167,10 @@
   .setting-row .lbl{flex:1;}
   .setting-row .lbl b{display:block; font-size:14px;}
   .setting-row .lbl span{font-size:12px; color:var(--text-dim);}
+  .setting-row .mini-btn{border:1.5px solid var(--border); background:var(--surface); color:var(--text-dim); font-size:12px; font-weight:700; padding:8px 12px; border-radius:100px; cursor:pointer; white-space:nowrap;}
+  .pin-status{font-size:11px; font-weight:700; padding:2px 8px; border-radius:100px; margin-left:6px;}
+  .pin-status.ok{background:var(--success-soft); color:var(--success);}
+  .pin-status.missing{background:var(--danger-soft); color:var(--danger);}
 
   .toast{position:fixed; left:50%; bottom:100px; transform:translateX(-50%) translateY(20px); z-index:60; background:var(--text); color:var(--bg); font-size:13.5px; font-weight:600; padding:12px 18px; border-radius:100px; opacity:0; pointer-events:none; transition:all .22s ease; box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:8px; max-width:calc(100% - 40px); white-space:nowrap;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
@@ -177,6 +183,11 @@
   .name-row .text-input{flex:1;}
   .name-row button{border:none; background:var(--danger-soft); color:var(--danger); width:40px; border-radius:12px; font-size:16px; cursor:pointer;}
   .add-link{background:none; border:1.5px dashed var(--border); color:var(--text-dim); font-weight:700; font-size:13.5px; padding:12px; border-radius:14px; width:100%; cursor:pointer; margin-top:4px;}
+
+  .pin-dots{display:flex; justify-content:center; gap:16px; margin:22px 0 4px;}
+  .pin-dot{width:15px; height:15px; border-radius:50%; border:2px solid var(--border); transition:all .12s ease;}
+  .pin-dot.filled{background:var(--accent); border-color:var(--accent); transform:scale(1.1);}
+  .pin-error{color:var(--danger); font-size:13px; font-weight:700; text-align:center; min-height:18px; margin:8px 0 4px;}
 </style>
 </head>
 <body>
@@ -196,7 +207,6 @@
 
   // ---------- Backend (Google Sheets vía Apps Script) ----------
   var API_URL = "https://script.google.com/macros/s/AKfycbykeHUfaG0RwkPkr6neaQB__tIgMbO-kngN7kpai9XMwiWYaMzVptczg8XVHrCXqh1Bog/exec";
-  var SHEET_URL = "https://docs.google.com/spreadsheets/d/" ; // se completa si el usuario abre "Ver en Sheets" desde el propio Apps Script link (fallback: abrimos el endpoint)
 
   // Google Apps Script no manda cabeceras CORS, así que fetch() normal
   // queda bloqueado por el navegador. Usamos JSONP (una etiqueta <script>)
@@ -231,15 +241,16 @@
     });
   }
 
-  async function apiGet(){
-    return jsonp({ action:"list" });
-  }
-  async function apiPost(payload){
-    var params = { action: payload.action };
-    if(payload.expense) params.payload = JSON.stringify(payload.expense);
-    if(payload.config) params.payload = JSON.stringify(payload.config);
-    if(payload.id) params.id = payload.id;
-    var res = await jsonp(params);
+  // Punto único de llamada al backend. Todos los datos de una acción van
+  // empacados juntos en un solo campo "payload" (así es como el servidor
+  // los espera); el token de sesión se adjunta solo aparte.
+  async function api(action, params){
+    var p = { action: action };
+    if(params && Object.keys(params).length){
+      p.payload = JSON.stringify(params);
+    }
+    if(state.session && state.session.token) p.token = state.session.token;
+    var res = await jsonp(p);
     if(res && res.ok === false) throw new Error(res.error || "server error");
     return res;
   }
@@ -261,15 +272,16 @@
 
   // ---------- State ----------
   var state = {
-    founders: [],
-    myFounderId: null,
+    session: null,           // {token, role:'founder'|'admin', founderId?, name, color}
+    founders: [],            // nombres/colores (nunca PINs) — para resolver avatares en las filas
     expenses: [],
-    pending: [], // gastos que ya se muestran en pantalla pero aún se están guardando en la hoja
-    filter: "all",
+    pending: [],              // gastos que ya se muestran pero aún se están guardando
+    filter: "all",             // personal / negocio / all
+    adminFounderFilter: "all", // solo aplica en la vista de administrador
     quickAdd: { amount: "", categoryId: null, type: "personal", note: "" },
     loaded: false
   };
-  var LS_KEY = "eleva_gastos_founder_id";
+  var LS_KEY = "eleva_gastos_session_v2";
   var pollTimer = null;
 
   var app = document.getElementById("app");
@@ -291,13 +303,23 @@
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(t._h);
-    t._h = setTimeout(function(){ t.classList.remove("show"); }, 2400);
+    t._h = setTimeout(function(){ t.classList.remove("show"); }, 2600);
   }
+
+  function byDateDesc(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); }
 
   // ---------- Boot ----------
   async function boot(){
-    await loadData(true);
-    startPolling();
+    var raw = null;
+    try{ raw = localStorage.getItem(LS_KEY); }catch(e){}
+    if(raw){
+      try{ state.session = JSON.parse(raw); }catch(e){ state.session = null; }
+    }
+    if(state.session && state.session.token){
+      await loadData(true);
+    } else {
+      await renderAuthEntry();
+    }
   }
 
   function startPolling(){
@@ -308,38 +330,52 @@
       loadData(false);
     }, 7000);
     document.addEventListener("visibilitychange", function(){
-      if(!document.hidden) loadData(false);
+      if(!document.hidden && state.session) loadData(false);
     });
   }
 
+  function onLoginSuccess(session){
+    state.session = session;
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(session)); }catch(e){}
+    state.filter = "all";
+    state.adminFounderFilter = "all";
+    loadData(true).then(startPolling);
+  }
+
+  function logout(sessionExpired){
+    if(pollTimer) clearInterval(pollTimer);
+    var tok = state.session ? state.session.token : null;
+    state.session = null;
+    state.expenses = []; state.pending = []; state.founders = [];
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    if(tok && !sessionExpired){ api("logout", {}).catch(function(){}); } // best-effort, no bloquea la salida
+    renderAuthEntry();
+    if(sessionExpired) toast("Tu sesión expiró, ingresa tu PIN de nuevo");
+  }
+
+  // ---------- Carga de datos ----------
   async function loadData(first, attempt){
     attempt = attempt || 1;
+    if(!state.session) return renderAuthEntry();
     try{
-      var data = await apiGet();
-      state.expenses = (data.expenses || []).slice().sort(function(a,b){
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      });
-      var founders = (data.config && data.config.founders) || [];
-      state.founders = founders;
-
-      if(first){
-        state.myFounderId = localStorage.getItem(LS_KEY);
-        if(!founders.length){ renderOnboardSetup(); return; }
-        if(!state.myFounderId || !founders.some(function(f){return f.id===state.myFounderId;})){ renderOnboardWho(); return; }
-        renderShell();
+      if(state.session.role === "admin"){
+        var admin = await api("adminData");
+        state.founders = admin.founders || [];
+        state.expenses = (admin.expenses || []).slice().sort(byDateDesc);
+        if(first) renderAdminShell(); else refreshVisibleScreen();
       } else {
-        // actualizaciones silenciosas: solo refrescar si ya estamos en la pantalla principal
-        if(document.getElementById("list")){ renderList(); renderTotals(); }
-        if(document.getElementById("screen-onboard") && founders.length && state.myFounderId){
-          // el equipo ya se configuró en otro dispositivo mientras esperábamos
-        }
+        var mine = await api("myData");
+        state.founders = (mine.config && mine.config.founders) || [];
+        state.expenses = (mine.expenses || []).slice().sort(byDateDesc);
+        if(first) renderShell(); else refreshVisibleScreen();
       }
       state.loaded = true;
     }catch(err){
       console.error(err);
+      if(err.message === "invalid_session"){ logout(true); return; }
       if(first){
-        // Google Apps Script a veces tarda en "despertar" — reintenta un par
-        // de veces antes de mostrar el error, en vez de fallar al primer intento.
+        // Google Apps Script a veces tarda en "despertar" — reintenta antes
+        // de rendirse.
         if(attempt < 3){
           setTimeout(function(){ loadData(true, attempt + 1); }, 1200 * attempt);
           return;
@@ -350,20 +386,154 @@
             '<button class="btn-primary" id="retryLoadBtn" style="margin-top:20px;max-width:220px;">Reintentar</button>' +
           '</div>';
         var rb = document.getElementById("retryLoadBtn");
-        if(rb) rb.onclick = function(){ app.innerHTML = ""; boot(); };
+        if(rb) rb.onclick = function(){ app.innerHTML = ""; loadData(true); };
       } else {
         toast("Sin conexión, reintentando…");
       }
     }
   }
 
-  // ---------- Onboarding: create team ----------
-  function renderOnboardSetup(){
+  function refreshVisibleScreen(){
+    if(document.getElementById("list")){ renderList(); renderTotals(); }
+  }
+
+  // ---------- Entrada: quién eres / configuración inicial ----------
+  async function renderAuthEntry(attempt){
+    attempt = attempt || 1;
+    app.innerHTML =
+      '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:14px;">' +
+        '<div class="brandmark" style="width:48px;height:48px;border-radius:15px;font-size:18px;">GE</div>' +
+        '<span style="color:var(--text-dim); font-size:13.5px;">Cargando…</span>' +
+      '</div>';
+    try{
+      var data = await api("bootstrap");
+      var founders = data.founders || [];
+      var wantsAdminSetup = location.search.indexOf("setup=admin") !== -1;
+      if(!data.hasAdmin && (wantsAdminSetup || founders.length === 0)){
+        renderCreateAdmin(founders);
+      } else {
+        renderWhoAmI(founders, data.hasAdmin);
+      }
+    }catch(err){
+      console.error(err);
+      if(attempt < 3){ setTimeout(function(){ renderAuthEntry(attempt+1); }, 1200*attempt); return; }
+      app.innerHTML =
+        '<div style="padding:60px 24px;text-align:center;color:var(--text-dim);font-size:14px;">' +
+          'No se pudo conectar con la hoja de datos.<br>Revisa tu conexión e intenta de nuevo.' +
+          '<button class="btn-primary" id="retryAuthBtn" style="margin-top:20px;max-width:220px;">Reintentar</button>' +
+        '</div>';
+      var rb = document.getElementById("retryAuthBtn");
+      if(rb) rb.onclick = function(){ renderAuthEntry(); };
+    }
+  }
+
+  // Teclado numérico reutilizable de 4 dígitos, con confirmación opcional
+  // (para crear un PIN nuevo se pide dos veces). onSubmit(pin, failCb).
+  function renderPinScreen(opts){
+    app.innerHTML =
+      '<div class="onboard" id="screen-onboard">' +
+        '<div class="brandmark">GE</div>' +
+        '<h1 id="pinTitle">'+esc(opts.title)+'</h1>' +
+        '<p id="pinSubtitle">'+esc(opts.subtitle)+'</p>' +
+        '<div class="pin-dots" id="pinDots"></div>' +
+        '<div class="pin-error" id="pinError"></div>' +
+        '<div class="keypad" id="pinKeypad" style="max-width:280px;margin:10px auto 0;"></div>' +
+        (opts.backLabel ? '<button class="add-link" id="pinBack">'+esc(opts.backLabel)+'</button>' : '') +
+      '</div>';
+
+    var pin = "", firstPin = "", stage = 0, busy = false;
+
+    function renderDots(){
+      var html = "";
+      for(var i=0;i<4;i++) html += '<span class="pin-dot'+(i<pin.length?' filled':'')+'"></span>';
+      document.getElementById("pinDots").innerHTML = html;
+    }
+    renderDots();
+
+    var keys = ["1","2","3","4","5","6","7","8","9","blank","0","del"];
+    document.getElementById("pinKeypad").innerHTML = keys.map(function(k){
+      if(k === "blank") return '<button class="blank" tabindex="-1"></button>';
+      return '<button data-k="'+k+'" class="'+(k==="del"?"del":"")+'">'+(k==="del"?"⌫":k)+'</button>';
+    }).join("");
+
+    Array.prototype.forEach.call(document.querySelectorAll("#pinKeypad button[data-k]"), function(b){
+      b.onclick = function(){
+        if(busy) return;
+        var k = b.getAttribute("data-k");
+        document.getElementById("pinError").textContent = "";
+        if(k === "del"){ pin = pin.slice(0,-1); renderDots(); return; }
+        if(pin.length >= 4) return;
+        pin += k;
+        renderDots();
+        if(pin.length !== 4) return;
+
+        if(opts.confirm && stage === 0){
+          firstPin = pin; pin = ""; stage = 1;
+          setTimeout(function(){
+            document.getElementById("pinTitle").textContent = "Confirma tu PIN";
+            document.getElementById("pinSubtitle").textContent = "Vuelve a escribirlo para confirmar.";
+            renderDots();
+          }, 100);
+          return;
+        }
+        if(opts.confirm && stage === 1 && pin !== firstPin){
+          document.getElementById("pinError").textContent = "No coincide, intenta otra vez";
+          pin = ""; firstPin = ""; stage = 0;
+          setTimeout(function(){
+            document.getElementById("pinTitle").textContent = opts.title;
+            document.getElementById("pinSubtitle").textContent = opts.subtitle;
+            renderDots();
+          }, 650);
+          return;
+        }
+
+        var finalPin = pin;
+        busy = true;
+        setTimeout(function(){
+          opts.onSubmit(finalPin, function(errMsg){
+            busy = false;
+            pin = ""; firstPin = ""; stage = 0;
+            document.getElementById("pinTitle").textContent = opts.title;
+            document.getElementById("pinSubtitle").textContent = opts.subtitle;
+            document.getElementById("pinError").textContent = errMsg || "";
+            renderDots();
+          });
+        }, 80);
+      };
+    });
+
+    if(opts.backLabel){
+      document.getElementById("pinBack").onclick = opts.onBack;
+    }
+  }
+
+  // Primera vez que se abre la app en general: si ya existían personas (de
+  // antes de tener PINs) solo se pide crear el PIN de administrador; si no
+  // hay nada, se pide armar el equipo completo.
+  function renderCreateAdmin(existingFounders){
+    if(existingFounders && existingFounders.length){
+      renderPinScreen({
+        title: "Configura tu acceso de administrador",
+        subtitle: "El equipo ya está registrado. Crea tu PIN de administrador para poder ver y manejar los gastos de todos.",
+        confirm: true,
+        onSubmit: function(pin, fail){
+          api("initTeam", { adminPin: pin }).then(function(res){
+            onLoginSuccess({ token: res.token, role: "admin", name: "Administrador" });
+          }).catch(function(err){ fail(err.message === "server error" ? "No se pudo guardar, intenta de nuevo" : err.message); });
+        }
+      });
+    } else {
+      renderSetupTeam();
+    }
+  }
+
+  // ---------- Configurar equipo (primera vez, desde cero) ----------
+  function renderSetupTeam(){
     app.innerHTML =
       '<div class="onboard" id="screen-onboard">' +
         '<div class="brandmark">GE</div>' +
         '<h1>Gastos · Grupo Eleva</h1>' +
-        '<p>Antes de empezar, agrega a las personas que van a registrar gastos aquí. Solo se hace una vez.</p>' +
+        '<p>Agrega a las personas que van a registrar gastos. Cada quien va a crear su propio PIN después, para que sus gastos sean privados.</p>' +
         '<div class="field-label" style="margin-top:0;">Equipo</div>' +
         '<div id="nameRows"></div>' +
         '<button class="add-link" id="addNameBtn">+ Agregar persona</button>' +
@@ -381,30 +551,31 @@
     addRow(""); addRow(""); addRow("");
     document.getElementById("addNameBtn").onclick = function(){ addRow(""); };
 
-    document.getElementById("saveTeamBtn").onclick = async function(){
-      var btn = document.getElementById("saveTeamBtn");
+    document.getElementById("saveTeamBtn").onclick = function(){
       var inputs = rows.querySelectorAll("input");
       var names = Array.prototype.map.call(inputs, function(i){ return i.value.trim(); }).filter(Boolean);
       if(!names.length){ toast("Agrega al menos un nombre"); return; }
-      var founders = names.map(function(n,i){
-        return { id: "f_"+Date.now().toString(36)+"_"+i, name:n, color: FOUNDER_COLORS[i % FOUNDER_COLORS.length] };
+      var founders = names.map(function(n,i){ return { name:n, color: FOUNDER_COLORS[i % FOUNDER_COLORS.length] }; });
+
+      renderPinScreen({
+        title: "Crea tu PIN de administrador",
+        subtitle: "Con este PIN vas a poder ver los gastos de todos y administrar el equipo. Guárdalo bien.",
+        confirm: true,
+        backLabel: "Regresar",
+        onBack: function(){ renderSetupTeam(); },
+        onSubmit: function(pin, fail){
+          api("initTeam", { founders: founders, adminPin: pin }).then(function(res){
+            onLoginSuccess({ token: res.token, role: "admin", name: "Administrador" });
+          }).catch(function(err){ fail("No se pudo guardar, intenta de nuevo"); });
+        }
       });
-      btn.disabled = true; btn.textContent = "Guardando…";
-      try{
-        await apiPost({ action:"setConfig", config:{ founders: founders } });
-        state.founders = founders;
-        renderOnboardWho();
-      }catch(err){
-        toast("No se pudo guardar, intenta de nuevo");
-        btn.disabled = false; btn.textContent = "Continuar";
-      }
     };
   }
 
-  // ---------- Onboarding: who am I ----------
-  function renderOnboardWho(){
-    var cards = state.founders.map(function(f){
-      return '<div class="founder-card" data-id="'+f.id+'">' +
+  // ---------- ¿Quién eres? ----------
+  function renderWhoAmI(founders, hasAdmin){
+    var cards = founders.map(function(f){
+      return '<div class="founder-card" data-id="'+f.id+'" data-haspin="'+(f.hasPin?1:0)+'">' +
         '<div class="avatar" style="background:'+f.color+'">'+esc(f.name.charAt(0).toUpperCase())+'</div>' +
         '<b>'+esc(f.name)+'</b></div>';
     }).join("");
@@ -413,44 +584,73 @@
       '<div class="onboard" id="screen-onboard">' +
         '<div class="brandmark">GE</div>' +
         '<h1>¿Quién eres?</h1>' +
-        '<p>Elige tu nombre para identificar tus gastos. No necesitas contraseña.</p>' +
+        '<p>Elige tu nombre. Vas a necesitar tu PIN — tus gastos son privados, nadie más los puede ver.</p>' +
         '<div class="founder-grid">'+cards+'</div>' +
-        '<button class="add-link" id="notInList">No estoy en la lista</button>' +
+        (hasAdmin ? '<button class="btn-secondary" id="adminEntry">Soy administrador</button>' : '') +
       '</div>';
 
     Array.prototype.forEach.call(document.querySelectorAll(".founder-card"), function(el){
       el.onclick = function(){
-        state.myFounderId = el.getAttribute("data-id");
-        localStorage.setItem(LS_KEY, state.myFounderId);
-        renderShell();
+        var id = el.getAttribute("data-id");
+        var hasPin = el.getAttribute("data-haspin") === "1";
+        var f = founders.find(function(x){ return x.id === id; });
+        if(!hasPin){
+          renderPinScreen({
+            title: "Crea tu PIN",
+            subtitle: "Elige un PIN de 4 dígitos para proteger tus gastos, " + f.name + ".",
+            confirm: true,
+            backLabel: "No soy " + f.name,
+            onBack: function(){ renderWhoAmI(founders, hasAdmin); },
+            onSubmit: function(pin, fail){
+              api("setPin", { founderId:id, pin:pin }).then(function(res){
+                onLoginSuccess({ token:res.token, role:"founder", founderId:id, name:f.name, color:f.color });
+              }).catch(function(err){ fail(err.message); });
+            }
+          });
+        } else {
+          renderPinScreen({
+            title: "Hola, " + f.name,
+            subtitle: "Ingresa tu PIN para continuar.",
+            confirm: false,
+            backLabel: "No soy " + f.name,
+            onBack: function(){ renderWhoAmI(founders, hasAdmin); },
+            onSubmit: function(pin, fail){
+              api("login", { role:"founder", founderId:id, pin:pin }).then(function(res){
+                onLoginSuccess({ token:res.token, role:"founder", founderId:id, name:f.name, color:f.color });
+              }).catch(function(err){ fail(err.message); });
+            }
+          });
+        }
       };
     });
-    document.getElementById("notInList").onclick = async function(){
-      var name = prompt("¿Cuál es tu nombre?");
-      if(!name || !name.trim()) return;
-      var f = { id:"f_"+Date.now().toString(36), name:name.trim(), color: FOUNDER_COLORS[state.founders.length % FOUNDER_COLORS.length] };
-      var founders = state.founders.concat([f]);
-      try{
-        await apiPost({ action:"setConfig", config:{ founders: founders } });
-        state.founders = founders;
-        state.myFounderId = f.id;
-        localStorage.setItem(LS_KEY, f.id);
-        renderShell();
-      }catch(err){ toast("No se pudo guardar, intenta de nuevo"); }
-    };
+
+    if(hasAdmin){
+      document.getElementById("adminEntry").onclick = function(){
+        renderPinScreen({
+          title: "Acceso administrador",
+          subtitle: "Ingresa tu PIN de administrador.",
+          confirm: false,
+          backLabel: "Regresar",
+          onBack: function(){ renderWhoAmI(founders, hasAdmin); },
+          onSubmit: function(pin, fail){
+            api("login", { role:"admin", pin:pin }).then(function(res){
+              onLoginSuccess({ token:res.token, role:"admin", name:"Administrador" });
+            }).catch(function(err){ fail(err.message); });
+          }
+        });
+      };
+    }
   }
 
-  function me(){ return state.founders.find(function(f){return f.id===state.myFounderId;}) || {name:"Tú", color:"#6B2FE8", id:null}; }
-
-  // ---------- Main shell ----------
+  // ---------- Shell de un founder (solo ve lo suyo) ----------
   function renderShell(){
-    var m = me();
+    var m = state.session;
     app.innerHTML =
       '<div class="topbar" id="topbar">' +
         '<div class="brandmark">GE</div>' +
         '<div class="brandtext"><b>Gastos</b><span>Grupo Eleva</span></div>' +
         '<div class="topbar-spacer"></div>' +
-        '<button class="avatar-btn" id="switchBtn"><span class="avatar" style="background:'+m.color+';width:24px;height:24px;font-size:11px;">'+esc((m.name||"?").charAt(0).toUpperCase())+'</span><span>'+esc(m.name)+'</span></button>' +
+        '<div class="avatar-pill"><span class="avatar" style="background:'+(m.color||"#6B2FE8")+';width:24px;height:24px;font-size:11px;">'+esc((m.name||"?").charAt(0).toUpperCase())+'</span><span>'+esc(m.name)+'</span></div>' +
         '<button class="icon-btn" id="settingsBtn">' + iconGear() + '</button>' +
       '</div>' +
       '<div id="totals"></div>' +
@@ -458,7 +658,6 @@
       '<div class="list" id="list"></div>' +
       '<button class="fab" id="fabBtn">' + iconPlus() + '</button>';
 
-    document.getElementById("switchBtn").onclick = openFounderSwitch;
     document.getElementById("settingsBtn").onclick = openSettings;
     document.getElementById("fabBtn").onclick = openQuickAdd;
 
@@ -470,6 +669,46 @@
     renderFilters();
     renderTotals();
     renderList();
+  }
+
+  // ---------- Shell de administrador (ve todo, agrupado) ----------
+  function renderAdminShell(){
+    app.innerHTML =
+      '<div class="topbar" id="topbar">' +
+        '<div class="brandmark">GE</div>' +
+        '<div class="brandtext"><b>Gastos</b><span>Grupo Eleva</span></div>' +
+        '<div class="topbar-spacer"></div>' +
+        '<div class="role-badge">Admin</div>' +
+        '<button class="icon-btn" id="settingsBtn">' + iconGear() + '</button>' +
+      '</div>' +
+      '<div id="totals"></div>' +
+      '<div class="filters filters-tight" id="adminFounderFilters"></div>' +
+      '<div class="filters" id="filters"></div>' +
+      '<div class="list" id="list"></div>';
+
+    document.getElementById("settingsBtn").onclick = openAdminSettings;
+
+    window.addEventListener("scroll", function(){
+      var tb = document.getElementById("topbar");
+      if(tb) tb.classList.toggle("scrolled", window.scrollY > 4);
+    });
+
+    renderAdminFounderFilters();
+    renderFilters();
+    renderTotals();
+    renderList();
+  }
+
+  function renderAdminFounderFilters(){
+    var el = document.getElementById("adminFounderFilters");
+    if(!el) return;
+    var tabs = [{id:"all", label:"Todos"}].concat(state.founders.map(function(f){ return {id:f.id, label:f.name}; }));
+    el.innerHTML = tabs.map(function(t){
+      return '<button class="chip-tab'+(state.adminFounderFilter===t.id?' active':'')+'" data-f="'+t.id+'">'+esc(t.label)+'</button>';
+    }).join("");
+    Array.prototype.forEach.call(el.querySelectorAll(".chip-tab"), function(b){
+      b.onclick = function(){ state.adminFounderFilter = b.getAttribute("data-f"); renderAdminFounderFilters(); renderList(); renderTotals(); };
+    });
   }
 
   function renderFilters(){
@@ -488,18 +727,19 @@
     });
   }
 
-  // Every list/total in the app is scoped to the active profile first —
-  // each founder only ever sees their own expenses, never anyone else's.
-  // Merge server-confirmed expenses with any still-saving ones so a new
-  // expense appears instantly instead of waiting on the round trip.
-  function myExpenses(){
-    return state.expenses.concat(state.pending)
-      .filter(function(e){ return e.founderId === state.myFounderId; })
-      .sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
+  // El servidor ya nos entrega solo los gastos que nos corresponde ver
+  // (los propios si somos founder, todos si somos admin) — aquí solo se
+  // añaden los que aún se están guardando y se aplican los filtros visuales.
+  function scopedExpenses(){
+    var list = state.expenses.concat(state.pending).sort(byDateDesc);
+    if(state.session.role === "admin" && state.adminFounderFilter !== "all"){
+      list = list.filter(function(e){ return e.founderId === state.adminFounderFilter; });
+    }
+    return list;
   }
 
   function filteredExpenses(){
-    return myExpenses().filter(function(e){
+    return scopedExpenses().filter(function(e){
       if(state.filter==="personal") return e.type === "personal";
       if(state.filter==="negocio") return e.type === "negocio";
       return true;
@@ -510,7 +750,7 @@
     var el = document.getElementById("totals");
     if(!el) return;
     var now = new Date();
-    var monthExp = myExpenses().filter(function(e){
+    var monthExp = scopedExpenses().filter(function(e){
       var d = new Date(e.createdAt);
       return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
     });
@@ -544,7 +784,7 @@
     if(!el) return;
     var items = filteredExpenses();
     if(!items.length){
-      el.innerHTML = '<div class="empty"><div class="glyph">'+iconPlus()+'</div><h3>Sin gastos todavía</h3><p>Toca el botón + para registrar<br>tu primer gasto.</p></div>';
+      el.innerHTML = '<div class="empty"><div class="glyph">'+iconPlus()+'</div><h3>Sin gastos todavía</h3><p>'+(state.session.role==="admin"?'Cuando alguien registre un gasto,<br>va a aparecer aquí.':'Toca el botón + para registrar<br>tu primer gasto.')+'</p></div>';
       return;
     }
     var groups = [], lastKey = null, cur = null;
@@ -572,7 +812,7 @@
     var f = state.founders.find(function(x){return x.id===e.founderId;}) || {name:"—", color:"#999"};
     var isNeg = e.type === "negocio";
     var isPending = /^tmp_/.test(e.id);
-    return '<div class="row'+(isPending?' row-pending':'')+'" data-id="'+e.id+'" style="'+(isPending?'opacity:.55;':'')+'">' +
+    return '<div class="row" data-id="'+e.id+'" style="'+(isPending?'opacity:.55;':'')+'">' +
       '<div class="row-icon" style="background:'+hexA(f.color,.14)+'; color:'+f.color+'">'+ '<svg viewBox="0 0 24 24">'+cat.icon+'</svg>' + '</div>' +
       '<div class="row-mid"><div class="cat">'+esc(cat.label)+(e.note? ' · '+esc(e.note) : '')+'</div><div class="meta">'+esc(f.name)+(isPending? ' · Guardando…' : '')+'</div></div>' +
       '<div class="row-amt"><div class="amt tnum">'+fmtMoney(e.amount)+'</div><div class="type" style="color:'+(isNeg?'var(--accent-2)':'var(--accent)')+'">'+(isNeg?'Negocio':'Personal')+'</div></div>' +
@@ -607,7 +847,7 @@
     activeSheet = null;
   }
 
-  // ---------- Quick add ----------
+  // ---------- Quick add (solo founders) ----------
   function openQuickAdd(){
     state.quickAdd = { amount:"", categoryId:null, type:"personal", note:"" };
     openSheet(
@@ -672,8 +912,7 @@
       if(!amt || !state.quickAdd.categoryId) return;
       // Guardado optimista: el gasto aparece en la lista al instante y se
       // cierra la hoja de inmediato; el envío a la hoja de cálculo sigue
-      // en segundo plano, para que registrar un gasto se sienta instantáneo
-      // en vez de esperar a que responda Google Apps Script.
+      // en segundo plano.
       var tempId = "tmp_" + Date.now() + "_" + Math.floor(Math.random()*1e6);
       var newExpense = {
         id: tempId,
@@ -681,7 +920,7 @@
         categoryId: state.quickAdd.categoryId,
         type: state.quickAdd.type,
         note: (state.quickAdd.note||"").trim(),
-        founderId: state.myFounderId,
+        founderId: state.session.founderId,
         createdAt: new Date().toISOString()
       };
       state.pending.push(newExpense);
@@ -695,16 +934,15 @@
   async function savePendingExpense(newExpense, attempt){
     attempt = attempt || 1;
     try{
-      await apiPost({ action:"addExpense", expense:{
-        // se manda el mismo id generado en el celular en cada intento —
-        // así, si un reintento llega después de que el primero sí se
-        // guardó, la hoja lo reconoce y no lo duplica.
+      await api("addExpense", { expense:{
+        // el mismo id generado en el celular en cada intento — así, si un
+        // reintento llega después de que el primero sí se guardó, el
+        // servidor lo reconoce y no lo duplica.
         clientId: newExpense.id,
         amount: newExpense.amount,
         categoryId: newExpense.categoryId,
         type: newExpense.type,
         note: newExpense.note,
-        founderId: newExpense.founderId,
         createdAt: newExpense.createdAt
       }});
       // espera a tener los datos reales del servidor antes de quitar la
@@ -713,6 +951,7 @@
       state.pending = state.pending.filter(function(e){ return e.id !== newExpense.id; });
       if(document.getElementById("list")){ renderList(); renderTotals(); }
     }catch(err){
+      if(err.message === "invalid_session"){ logout(true); return; }
       if(attempt < 3){
         setTimeout(function(){ savePendingExpense(newExpense, attempt + 1); }, 1500 * attempt);
       } else {
@@ -734,7 +973,7 @@
     btn.disabled = !(amt>0 && state.quickAdd.categoryId);
   }
 
-  // ---------- Detail / delete ----------
+  // ---------- Detalle / borrar ----------
   function openDetail(id){
     var e = state.expenses.find(function(x){return x.id===id;});
     if(!e) return;
@@ -756,75 +995,97 @@
     document.getElementById("dtDelete").onclick = async function(){
       if(!confirm("¿Eliminar este gasto?")) return;
       try{
-        await apiPost({ action:"deleteExpense", id:id });
+        await api("deleteExpense", { id:id });
         closeSheet();
         toast("Gasto eliminado");
         loadData(false);
-      }catch(err){ toast("No se pudo eliminar, intenta de nuevo"); }
+      }catch(err){
+        if(err.message === "invalid_session"){ logout(true); return; }
+        toast("No se pudo eliminar, intenta de nuevo");
+      }
     };
   }
 
-  // ---------- Founder switch ----------
-  function openFounderSwitch(){
-    var cards = state.founders.map(function(f){
-      return '<div class="founder-card'+(f.id===state.myFounderId?' active':'')+'" data-id="'+f.id+'">' +
-        '<div class="avatar" style="background:'+f.color+'">'+esc(f.name.charAt(0).toUpperCase())+'</div><b>'+esc(f.name)+'</b></div>';
-    }).join("");
-    openSheet(
-      '<div class="sheet-head"><h2>Cambiar de persona</h2><button class="sheet-close" id="swClose">✕</button></div>' +
-      '<div class="sheet-body"><div class="founder-grid">'+cards+'</div>' +
-      '<button class="add-link" id="swAdd">+ Agregar persona</button></div>'
-    );
-    document.getElementById("swClose").onclick = closeSheet;
-    Array.prototype.forEach.call(document.querySelectorAll(".founder-card"), function(el){
-      el.onclick = function(){
-        state.myFounderId = el.getAttribute("data-id");
-        localStorage.setItem(LS_KEY, state.myFounderId);
-        state.filter = "all";
-        closeSheet();
-        renderShell();
-      };
-    });
-    document.getElementById("swAdd").onclick = async function(){
-      var name = prompt("Nombre de la persona:");
-      if(!name || !name.trim()) return;
-      var f = { id:"f_"+Date.now().toString(36), name:name.trim(), color: FOUNDER_COLORS[state.founders.length % FOUNDER_COLORS.length] };
-      var founders = state.founders.concat([f]);
-      try{
-        await apiPost({ action:"setConfig", config:{ founders: founders } });
-        state.founders = founders;
-        closeSheet();
-      }catch(err){ toast("No se pudo guardar, intenta de nuevo"); }
-    };
-  }
-
-  // ---------- Settings ----------
+  // ---------- Ajustes: founder ----------
   function openSettings(){
     openSheet(
       '<div class="sheet-head"><h2>Ajustes</h2><button class="sheet-close" id="stClose">✕</button></div>' +
       '<div class="sheet-body">' +
         '<div class="field-label" style="margin-top:0;">Datos</div>' +
-        '<div class="setting-row"><div class="lbl"><b>Exportar a Excel</b><span>Descarga todos los gastos como .xlsx</span></div><button class="icon-btn" id="exportBtn">'+iconDownload()+'</button></div>' +
-        '<div class="setting-row"><div class="lbl"><b>Todo vive en tu Google Sheet</b><span>Cada gasto se guarda directo en la hoja que creaste</span></div></div>' +
-        '<div class="field-label">Equipo</div>' +
-        (state.founders.map(function(f){
-          return '<div class="setting-row"><div class="avatar" style="background:'+f.color+'">'+esc(f.name.charAt(0).toUpperCase())+'</div><div class="lbl"><b>'+esc(f.name)+'</b></div></div>';
-        }).join("")) +
-        '<button class="btn-secondary" id="switchFromSettings" style="border:1.5px solid var(--border); cursor:pointer;">Cambiar quién soy yo</button>' +
+        '<div class="setting-row"><div class="lbl"><b>Exportar a Excel</b><span>Descarga tus gastos como .xlsx</span></div><button class="icon-btn" id="exportBtn">'+iconDownload()+'</button></div>' +
+        '<div class="setting-row"><div class="lbl"><b>Tus gastos son privados</b><span>Nadie más los puede ver, ni siquiera cambiando de persona</span></div></div>' +
+        '<button class="btn-secondary" id="logoutBtn" style="border:1.5px solid var(--border); cursor:pointer; color:var(--danger);">Cerrar sesión</button>' +
       '</div>'
     );
     document.getElementById("stClose").onclick = closeSheet;
     document.getElementById("exportBtn").onclick = exportExcel;
-    document.getElementById("switchFromSettings").onclick = function(){ closeSheet(); setTimeout(openFounderSwitch, 240); };
+    document.getElementById("logoutBtn").onclick = function(){ closeSheet(); setTimeout(function(){ logout(false); }, 200); };
+  }
+
+  // ---------- Ajustes: administrador ----------
+  function openAdminSettings(){
+    var rows = state.founders.map(function(f){
+      return '<div class="setting-row">' +
+          '<div class="avatar" style="background:'+f.color+'">'+esc(f.name.charAt(0).toUpperCase())+'</div>' +
+          '<div class="lbl"><b>'+esc(f.name)+'</b><span class="pin-status '+(f.hasPin?'ok':'missing')+'">'+(f.hasPin?'Con PIN':'Sin PIN')+'</span></div>' +
+          (f.hasPin ? '<button class="mini-btn" data-reset="'+f.id+'">Reiniciar PIN</button>' : '') +
+        '</div>';
+    }).join("");
+    openSheet(
+      '<div class="sheet-head"><h2>Ajustes de administrador</h2><button class="sheet-close" id="stClose">✕</button></div>' +
+      '<div class="sheet-body">' +
+        '<div class="field-label" style="margin-top:0;">Datos</div>' +
+        '<div class="setting-row"><div class="lbl"><b>Exportar a Excel</b><span>Descarga los gastos de todos como .xlsx</span></div><button class="icon-btn" id="exportBtn">'+iconDownload()+'</button></div>' +
+        '<div class="field-label">Equipo</div>' +
+        rows +
+        '<button class="add-link" id="addFounderBtn">+ Agregar persona</button>' +
+        '<button class="btn-secondary" id="logoutBtn" style="border:1.5px solid var(--border); cursor:pointer; color:var(--danger);">Cerrar sesión</button>' +
+      '</div>'
+    );
+    document.getElementById("stClose").onclick = closeSheet;
+    document.getElementById("exportBtn").onclick = exportExcel;
+    document.getElementById("logoutBtn").onclick = function(){ closeSheet(); setTimeout(function(){ logout(false); }, 200); };
+    document.getElementById("addFounderBtn").onclick = async function(){
+      var name = prompt("Nombre de la nueva persona:");
+      if(!name || !name.trim()) return;
+      try{
+        await api("addFounder", { name:name.trim(), color: FOUNDER_COLORS[state.founders.length % FOUNDER_COLORS.length] });
+        toast("Persona agregada — va a crear su propio PIN al entrar");
+        closeSheet();
+        loadData(false);
+      }catch(err){ toast("No se pudo agregar, intenta de nuevo"); }
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-reset]"), function(btn){
+      btn.onclick = async function(){
+        var fid = btn.getAttribute("data-reset");
+        var f = state.founders.find(function(x){return x.id===fid;});
+        if(!confirm("¿Reiniciar el PIN de "+(f?f.name:"esta persona")+"? Va a tener que crear uno nuevo la próxima vez que entre, y se cierra su sesión actual.")) return;
+        try{
+          await api("resetPin", { founderId: fid });
+          toast("PIN reiniciado");
+          closeSheet();
+          loadData(false);
+        }catch(err){ toast("No se pudo reiniciar el PIN"); }
+      };
+    });
   }
 
   async function exportExcel(){
     if(!window.XLSX){ toast("No se pudo cargar el exportador"); return; }
     toast("Preparando archivo…");
     try{
-      var data = await apiGet();
-      var rows = (data.expenses||[]).map(function(e){
-        var f = state.founders.find(function(x){return x.id===e.founderId;});
+      var founders, expenses;
+      if(state.session.role === "admin"){
+        var admin = await api("adminData");
+        founders = admin.founders || [];
+        expenses = admin.expenses || [];
+      } else {
+        var mine = await api("myData");
+        founders = (mine.config && mine.config.founders) || [];
+        expenses = mine.expenses || [];
+      }
+      var rows = expenses.map(function(e){
+        var f = founders.find(function(x){return x.id===e.founderId;});
         var cat = catById(e.categoryId);
         var dt = new Date(e.createdAt);
         return {
@@ -851,6 +1112,7 @@
       toast("Excel descargado ✓");
     }catch(err){
       console.error(err);
+      if(err.message === "invalid_session"){ logout(true); return; }
       toast("No se pudo exportar, intenta de nuevo");
     }
   }
