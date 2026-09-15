@@ -1069,7 +1069,10 @@
       return '<div class="setting-row">' +
           '<div class="avatar" style="background:'+f.color+'">'+esc(f.name.charAt(0).toUpperCase())+'</div>' +
           '<div class="lbl"><b>'+esc(f.name)+'</b><span class="pin-status '+(f.hasPin?'ok':'missing')+'">'+(f.hasPin?'Con PIN':'Sin PIN')+'</span></div>' +
-          (f.hasPin ? '<button class="mini-btn" data-reset="'+f.id+'">Reiniciar PIN</button>' : '') +
+          '<div style="display:flex; gap:6px; flex:none; flex-wrap:wrap; justify-content:flex-end; max-width:150px;">' +
+            (f.hasPin ? '<button class="mini-btn" data-reset="'+f.id+'">Reiniciar PIN</button>' : '') +
+            '<button class="mini-btn" style="color:var(--danger); border-color:var(--danger-soft);" data-delete="'+f.id+'">Eliminar</button>' +
+          '</div>' +
         '</div>';
     }).join("");
     openSheet(
@@ -1107,6 +1110,20 @@
           closeSheet();
           loadData(false);
         }catch(err){ toast("No se pudo reiniciar el PIN"); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-delete]"), function(btn){
+      btn.onclick = async function(){
+        var fid = btn.getAttribute("data-delete");
+        var f = state.founders.find(function(x){return x.id===fid;});
+        var name = f ? f.name : "esta persona";
+        if(!confirm("¿Eliminar a "+name+"? Esto también borra todos sus gastos registrados y no se puede deshacer.")) return;
+        try{
+          await api("deleteFounder", { founderId: fid });
+          toast(name + " fue eliminado");
+          closeSheet();
+          loadData(false);
+        }catch(err){ toast("No se pudo eliminar, intenta de nuevo"); }
       };
     });
   }
